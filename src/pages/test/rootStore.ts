@@ -1,9 +1,6 @@
 
-import { Slider } from 'antd';
 import { types, flow } from 'mobx-state-tree';
-import { type } from 'os';
 import { defaultFormData,typeModule } from './data';
-
 
 const rootState = types.model('state',{
     formData:types.model(typeModule),
