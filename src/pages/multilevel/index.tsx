@@ -37,13 +37,9 @@ const Multilevel = (props:any) => {
 
     const onValuesChange = (formValues:any) => {
       const values =  formRef?.current?.getFieldsFormatValue?.();
-      
       const key =  Object.keys(formValues)[0]
-      console.log('formValues:', formValues);
-      
       if (key?.includes('fruilDetail')) {
         rootStateInstance.setFormValue(key, formValues[key])
-  
       } else {
         rootStateInstance.setFormValue(key,formValues[key] )
       }

@@ -8,8 +8,7 @@ import {
     ProFormTextArea,
     ProFormInstance
   } from '@ant-design/pro-components';
-  import { Col, message, Row, Space } from 'antd';
-  import type { FormLayout } from 'antd/lib/form/Form';
+  import {message } from 'antd';
   import rootStateInstance from './rootStore';
   import { getSnapshot } from 'mobx-state-tree';
   import { defaultFormData } from './data';
@@ -21,7 +20,7 @@ import {
     rootStateInstance.setFormValue(key,formValues[key] )
   }
   
-  export default (props:any) => {
+  const Edit = (props:any) => {
     const navigate = useNavigate();
     const formRef = useRef<ProFormInstance>();
     const location = useLocation()
@@ -36,6 +35,12 @@ import {
       }
     },[])
 
+    useEffect(() => {
+      return () => {
+        rootStateInstance.resetFormData(defaultFormData)
+      }
+    },[])
+
     return (
       <div style={{padding:'20px'}}>
         <ProForm
@@ -46,8 +51,6 @@ import {
             message.success('提交成功');
             rootStateInstance.addList(rootState.formData)
             navigate(-1)
-          
-            
           }}
           onReset = {() => {
             const resetFormData = defaultFormData
@@ -56,7 +59,7 @@ import {
           onValuesChange = {onValuesChange}
           params={{}}
         >
-          
+          <ProFormDigit rules={[{required:true}]}  width={500} colProps={{ md: 12, xl: 8 }} name="id" label="id" />
           <ProFormText  width={500} name="title" label="标题" />
           <ProFormText  width={500} colProps={{ md: 12, xl: 8 }} name="name" label="名称" />
           <ProFormDigit  width={500} colProps={{ md: 12, xl: 8 }} name="count" label="数量" />
@@ -73,8 +76,10 @@ import {
               3: '小',
             }}
           />
-          <ProFormDigit  width={500} colProps={{ md: 12, xl: 8 }} name="id" label="数量" />
+          
         </ProForm>
       </div>
     );
   };
+
+  export default Edit 

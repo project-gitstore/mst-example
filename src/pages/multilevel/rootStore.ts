@@ -30,9 +30,6 @@ const getValue = (data: any): any => {
 };
 
 const setFruilDetail = (self:any, currentKey:string) => {
-    console.log('currentKey:', currentKey);
-    console.log('lastValue:', lastValue);
-    
     switch(currentKey) {
         case 'apple.time.timeStart':
              self.formData.fruilDetail.apple.time.timeStart = lastValue

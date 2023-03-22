@@ -23,7 +23,6 @@ const rootState = types.model('state',{
 })).actions(self => ({
     setFormValue: (key:string,value:number | null) => {
         if (key) {
-            console.log('key27:', key);
          (self.formData as any)[key] = value
         }
     },

@@ -1,36 +1,15 @@
-import React, { useEffect, useState} from 'react';
+import React from 'react';
 import {Button} from 'antd'
 import rootStateInstance from '../test/rootStore';
 import { getSnapshot } from 'mobx-state-tree';
 import { ProTable } from '@ant-design/pro-components';
-import type { ProColumns, ProFormInstance } from '@ant-design/pro-components';
+import type {ProFormInstance } from '@ant-design/pro-components';
 import { useNavigate } from 'react-router-dom';
-import { defaultFormData } from '../test/data';
-
 import { useRef } from 'react';
-import { Link } from "react-router-dom";
 
-import {
-
-  createBrowserHistory,
-
-  createHashHistory,
-
-  createMemoryHistory
-
-} from 'history'
-
-
-import path from 'path';
 const PageList = (props:any) => {
   const navigate = useNavigate();
-  const history = createBrowserHistory()
   const ref = useRef<ProFormInstance>();
-
-
-
-
-  
   const columns = [
     {
       title:'标题',
@@ -78,12 +57,10 @@ const PageList = (props:any) => {
        
         key="editable"
         onClick={() => {
-          console.log('record:', record);
           navigate('/test', {state:{row:record}})
-        
         }}
       >
-        编辑
+        详情
       </span>,
       ],
     },
@@ -91,24 +68,14 @@ const PageList = (props:any) => {
 
   const postList = async (params:any) => {
     params.size = params.pageSize;
-    console.log('76');
     const rootState =  getSnapshot(rootStateInstance)
-    console.log('lists:', rootState.list);
-    
     return {
       data: rootState.list || [],
       success: true,
       total: 0
     }
   }
-
   
-
-  // 跳转详情页
-  const goTo = (id:number | string) => {
-    history.push({pathname:'/test?id=1' })
-  }
- 
   return (
     <ProTable
         formRef={ref}
