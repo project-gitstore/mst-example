@@ -18,6 +18,10 @@ const rootState = types.model('state',{
         return self.list
     }
 })).actions(self => ({
+    afterCreate: () => {
+        // rootStateInstance.resetFormData(defaultFormData)
+    },
+
     setFormValue: (key:string,value:number | null) => {
         if (key) {
          (self.formData as any)[key] = value
@@ -30,9 +34,10 @@ const rootState = types.model('state',{
         (self as any).formData = resetFormData
     },
     // 获取表单详情
-    getDetail: flow(function * (rowData) {
-        return new Promise((resolve, reject) => {
+    getDetail: flow(function * (rowData, formRef) {
+            yield  new Promise((resolve, reject) => {
             setTimeout(() => {
+                formRef?.current?.setFieldsValue(rowData);
                 resolve(rowData)
             }, 1000);
         })
@@ -41,7 +46,17 @@ const rootState = types.model('state',{
     addList: (formData:any) => {
         self.list.push(formData)
     }
-}))
+})).actions(() => {
+    
+
+    
+
+
+    return {
+
+    }
+})
+
 const rootStateInstance = rootState.create({formData:defaultFormData, list:[]})
 
 export default rootStateInstance;

@@ -54,7 +54,6 @@ const PageList = (props:any) => {
       width:'60px',
       render: (text:any, record:any, _:any, action:any) => [
         <span
-       
         key="editable"
         onClick={() => {
           navigate('/test', {state:{row:record}})
@@ -65,16 +64,6 @@ const PageList = (props:any) => {
       ],
     },
   ];
-
-  const postList = async (params:any) => {
-    params.size = params.pageSize;
-    const rootState =  getSnapshot(rootStateInstance)
-    return {
-      data: rootState.list || [],
-      success: true,
-      total: 0
-    }
-  }
   
   return (
     <ProTable
@@ -82,7 +71,13 @@ const PageList = (props:any) => {
         onReset = {() => {}}
         columns={columns}
         request={async (params = {}) => {
-          return postList(params);
+          params.size = params.pageSize;
+          const rootState =  getSnapshot(rootStateInstance)
+          return {
+            data: rootState.list || [],
+            success: true,
+            total: 0
+          }
         }}
         sticky
         loading = {false}

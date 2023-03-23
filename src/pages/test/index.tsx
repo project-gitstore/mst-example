@@ -6,48 +6,25 @@ import {
     ProFormSelect,
     ProFormText,
     ProFormTextArea,
-    ProFormInstance
   } from '@ant-design/pro-components';
   import {message } from 'antd';
   import rootStateInstance from './rootStore';
   import { getSnapshot } from 'mobx-state-tree';
   import { defaultFormData } from './data';
-  import { useLocation } from 'react-router-dom';
   import { useNavigate } from 'react-router-dom';
 
   const onValuesChange = (formValues:any) => {
     const key =  Object.keys(formValues)[0]
-    rootStateInstance.setFormValue(key,formValues[key] )
+    rootStateInstance.setFormValue(key,formValues[key])
   }
   
   const Edit = (props:any) => {
     const navigate = useNavigate();
-    const formRef = useRef<ProFormInstance>();
-    const location = useLocation()
-    const id = location?.state?.row.id || ''
-    useEffect( () => {
-      if (id) {
-        const reDetail =  rootStateInstance.getDetail(location?.state?.row)
-        reDetail.then((res) => {
-          rootStateInstance.setFormData(res)
-          formRef?.current?.setFieldsValue(res);
-        })
-      }
-    },[])
-
-    useEffect(() => {
-      return () => {
-        rootStateInstance.resetFormData(defaultFormData)
-      }
-    },[])
-
     return (
       <div style={{padding:'20px'}}>
         <ProForm
-          formRef={formRef}
           onFinish={async (values) => {
             const rootState = getSnapshot(rootStateInstance)
-            console.log('formdatas:', rootState.formData);
             message.success('提交成功');
             rootStateInstance.addList(rootState.formData)
             navigate(-1)
@@ -76,7 +53,6 @@ import {
               3: '小',
             }}
           />
-          
         </ProForm>
       </div>
     );
