@@ -1,5 +1,5 @@
 
-import { types, flow, cast, onAction } from 'mobx-state-tree';
+import { types, cast, getSnapshot} from 'mobx-state-tree';
 
 const attributeItem = types.model({
     id:types.identifier,
@@ -9,11 +9,6 @@ const attributeItem = types.model({
         self.name = value;
     }
 }))
-
-export const attributeItemInstance = attributeItem.create({
-    id:(Math.random() * 1000000).toFixed(100).toString(),
-    name:''
-})
 
 const attribute = types.model({
     id:types.identifier,
@@ -29,50 +24,64 @@ const attribute = types.model({
             name:''
         })
     },
-    
 }))
 
 const attributes = types.model({
-    attributes:types.array(attribute)
+    attributes:types.array(types.maybeNull(attribute))
 }).actions((self) => ({
     addAttribute: () => {
         self.attributes.push(
             {
-                id:(Math.random() * 1000000).toFixed(10).toString(),
-                name:'颜色',
+                id:(Math.random() * 1000000).toFixed().toString(),
+                name:'',
                 attributeItems:[
                     {
-                        id:(Math.random() * 1000000).toFixed(100).toString(),
-                        name:'红'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     },
                     {
-                        id:(Math.random() * 1000000).toFixed(100).toString(),
-                        name:'黄'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     },
                     {
-                        id:(Math.random() * 1000000).toFixed(100).toString(),
-                        name:'蓝'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     }
                 ]
             }
         )
     },
+    deleteAttribute:(rowIndex:number) => {
+        self.attributes.splice(rowIndex, 1)
+    },
+    setAttributeName: (rowIndex:number, value:string) => {
+        self?.attributes[rowIndex]?.setName(value)
+    }
+    
+})).actions((self) => ({
     setAttributeItem: (rowIndex:number,itemIndex:number, value:string) => {
-        self.attributes[rowIndex].attributeItems[itemIndex].setName(value)
+        self?.attributes[rowIndex]?.attributeItems[itemIndex].setName(value)
     },
     addAttributeItem: (rowIndex:number) => {
-        self.attributes[rowIndex].attributeItems.push(
+        self?.attributes[rowIndex]?.attributeItems.push(
             {
-                id:(Math.random() * 1000000).toFixed(100).toString(),
+                id:(Math.random() * 1000000).toFixed().toString(),
                 name:''
             },
         )
-
     },
-    deleteAttributeItem:(rowIndex:number, attributeIndex:number) => {
-        self.attributes[rowIndex].attributeItems.splice(attributeIndex, 1)
-
-
+    deleteAttributeItem:(rowIndex:number, itemIndex:number) => {
+        self?.attributes[rowIndex]?.attributeItems.splice(itemIndex, 1)
+    },
+    
+}))
+.actions((self) => ({
+    formReload: (formRef:any) => {
+        formRef?.current?.setFieldValue('attributes',getSnapshot(attributeInstance).attributes)
+    },
+    resetForm: (formRef:any) => {
+        self.attributes = cast([])
+        attributeInstance.formReload(formRef)
     }
 }))
 
@@ -80,27 +89,23 @@ export  const attributeInstance = attributes.create(
     {
         attributes:[
             {
-                id:'1111',
-                name:'颜色',
+                id:(Math.random() * 1000000).toFixed().toString(),
+                name:'',
                 attributeItems:[
                     {
-                        id:'00000',
-                        name:'红'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     },
                     {
-                        id:'',
-                        name:'黄'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     },
                     {
-                        id:'',
-                        name:'蓝'
+                        id:(Math.random() * 1000000).toFixed().toString(),
+                        name:''
                     }
                 ]
             }
         ]
     }
 )
-
-
-
-

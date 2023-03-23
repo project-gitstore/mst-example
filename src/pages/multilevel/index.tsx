@@ -1,22 +1,24 @@
-import { ProCard, ProForm, ProFormList, ProFormText,FormListActionType,ProFormInstance } from '@ant-design/pro-components';
-import { Button, Input, Select}  from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
-import  {attributeInstance, attributeItemInstance} from './multilevel-instance'
+import { ProCard, ProForm, ProFormList,ProFormField, ProFormText,FormListActionType,ProFormInstance } from '@ant-design/pro-components';
+import { Button }  from 'antd';
+import React, { useRef } from 'react';
+import  {attributeInstance} from './multilevel-instance'
 import { observer } from 'mobx-react-lite';
 import { getSnapshot} from 'mobx-state-tree';
-// import style from './index.module.less';
+import style from './index.module.less';
+import { useNavigate } from 'react-router-dom';
 
 const Specifications = () => {
+  const navigate = useNavigate();
   const actionRef = useRef<FormListActionType<{ name: string;}>>()
   const formRef = useRef<ProFormInstance>();
 
   return (
-    <div >
-      <div >
+    <div className={style.multilevelInstanceRoot} >
+      <div className={style.addBtnEl} >
           <Button
               onClick={() => {
                 attributeInstance.addAttribute();
-                formRef?.current?.setFieldValue('attributes',getSnapshot(attributeInstance).attributes)
+                attributeInstance.formReload(formRef);
               }}
           >
             新增
@@ -28,6 +30,11 @@ const Specifications = () => {
         onFinish={async (values) => {
           console.log('values:', getSnapshot(attributeInstance).attributes);
         }}
+        onReset = {
+          () => {
+            attributeInstance.resetForm(formRef)
+          }
+        }
         >
         <ProFormList
           creatorButtonProps = {false}
@@ -47,33 +54,57 @@ const Specifications = () => {
               {listDom}
             </ProCard>
           )}
+          actionRender = {
+              (field,action)=> [
+                <span className={style.deleteEl} 
+                  onClick={() => {
+                    attributeInstance.deleteAttribute(Number(field.key))
+                    attributeInstance.formReload(formRef)
+                  }} 
+                  key = {field?.key} 
+                >
+                  删除
+                </span>
+              ]
+          }
           creatorRecord={{ name: '', items: [{ name: '' }] }}
           initialValue={getSnapshot(attributeInstance).attributes.slice()}
         >
            {(
-            // 当前行的基本信息 {name: number; key: number}
             meta,
-            // 当前的行号
             attributeIndex,
             action,
-            // 总行数
             count,
           ) => {
             return (
               <div>
-                <ProFormText style={{ padding: 0 }} width="md" name="name" label="规格名" />
+                <ProFormText 
+                  style={{ padding: 0 }} 
+                  width="md" 
+                  name="name" 
+                  label="规格名" 
+                  fieldProps={{
+                    onChange:(e) => {
+                      attributeInstance.setAttributeName(attributeIndex, e.target.value)
+                    }
+                  }}
+                />
                 <ProForm.Item isListField style={{ marginBlockEnd: 0 }} label="规格值">
+                  <div className={style.addAttributeItemEl} onClick={
+                    () => {
+                      attributeInstance.addAttributeItem(attributeIndex);
+                      attributeInstance.formReload(formRef)
+                    }
+                  }>
+                    新建规格
+                  </div>
                   <ProFormList
                     name="attributeItems"
                     actionRender = {
-                      (field,action)=> [
-                        <span key = {field?.key}  onClick={()=>{
-                          attributeInstance.deleteAttributeItem(attributeIndex, attributeIndex);
-                          formRef?.current?.setFieldValue('attributes',getSnapshot(attributeInstance).attributes)
-
-                        }}></span>
-                      ]
-                  }
+                        (field,action)=> [
+                          <span key = {field?.key} ></span>
+                        ]
+                    }
                     
                     min={1}
                     copyIconProps={false}
@@ -91,43 +122,44 @@ const Specifications = () => {
                     )}
                   >
                     {(
-                      // 当前行的基本信息 {name: number; key: number}
                       meta,
-                      // 当前的行号
                       itemIndex,
-                      action,
-                      // 总行数
                       count,
                     )  => {
                       return (
-                        <div style={{}}>
+                        <div className={style.attributeItemBox}>
                           <ProFormText allowClear={false} fieldProps = {{
                             onChange:(e) => {
                               attributeInstance.setAttributeItem(attributeIndex, itemIndex, e.target.value)
                             }
                           }} width="xs" name={['name']} />
-                          <span  onClick={()=>{
-                          attributeInstance.deleteAttributeItem(attributeIndex, attributeIndex);
-                          formRef?.current?.setFieldValue('attributes',getSnapshot(attributeInstance).attributes)
-
-                        }}>删除69</span>
+                          <span className={style.deleteEl}  onClick={()=>{
+                              attributeInstance.deleteAttributeItem(attributeIndex, itemIndex);
+                              attributeInstance.formReload(formRef)
+                          }}>删除</span>
                         </div>
                       )
                     }}
                   </ProFormList>
-                  <span style={{position:'relative', top:'-30px', cursor:'pointer'}} onClick={
-                    () => {
-                      attributeInstance.addAttributeItem(attributeIndex);
-                      formRef?.current?.setFieldValue('attributes',getSnapshot(attributeInstance).attributes)
-                    }
-                  }>
-                    新建规格
-                  </span>
+                  
                 </ProForm.Item>
               </div>
             );
           }}
         </ProFormList>
+          <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
+            <ProFormField
+              ignoreFormItem
+              fieldProps={{
+                style: {
+                  width: '100%',
+                },
+              }}
+              mode="read"
+              valueType="jsonCode"
+              text={JSON.stringify(getSnapshot(attributeInstance).attributes)}
+            />
+        </ProCard>
       </ProForm>
     </div>
   );
