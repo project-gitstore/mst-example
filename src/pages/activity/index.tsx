@@ -12,9 +12,7 @@ const Activity = () => {
     {
       title: '活动名称',
       dataIndex: 'title',
-      tooltip: '只读，使用form.getFieldValue获取不到值',
       width: '15%',
-      
       renderFormItem: (_:any, row:any) => {
         return (
           <Input onChange={ (e) => {
@@ -30,7 +28,7 @@ const Activity = () => {
       title: '状态',
       key: 'state',
       dataIndex: 'state',
-      
+      width: '15%',
       renderFormItem: (_:any, row:any) => {
         return (
           <Select

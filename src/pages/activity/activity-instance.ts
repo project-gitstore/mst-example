@@ -61,7 +61,6 @@ const activity = types.model({
         })
     },
     delete: (id:string) => {
-        
         self.activityList.forEach((activityItem,index) => {
             console.log('id:', id);
             console.log('activityItem.id:', activityItem.id);
@@ -73,8 +72,16 @@ const activity = types.model({
 }))
 
 export const activityInstance = activity.create({
-    editKeys:[],
-    activityList:[]
+    editKeys:['1'],
+    activityList:[
+        {
+            id: '1',
+            title:'',
+            decs: '',
+            state: '1',
+            days: 0,
+        }
+    ]
 })
 
 
