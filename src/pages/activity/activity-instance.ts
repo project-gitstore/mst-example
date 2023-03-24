@@ -1,5 +1,5 @@
 
-import { types, flow } from 'mobx-state-tree';
+import { types } from 'mobx-state-tree';
 
 // 活动项目
 const activityItem = types.model(
@@ -9,6 +9,7 @@ const activityItem = types.model(
         decs: types.string,
         state: types.string,
         days: types.maybeNull(types.number),
+        isEdit:types.boolean,
     },
 ).actions((self) => ({
     updateValue: (key:string,value:any) => {
@@ -17,31 +18,14 @@ const activityItem = types.model(
 }))
 
 const activity = types.model({
-    editKeys:types.array(types.string),
     activityList: types.array(activityItem)
 }).views((self) => ({
     getActivityList: () => {
         return self.activityList;
     }
-})).views((self) => ({
-    getEditKeys: () => {
-        return self.editKeys
-    }
-})).actions((self) => ({
-    setEditKeys: (editKey:string) => {
-        self.editKeys.push(editKey)
-    },
-    deleteEdikey: (editKey:string) => {
-        self.editKeys.forEach((currenEditKey, index) => {
-            if (currenEditKey === editKey) {
-                self.editKeys.splice(index, 1)
-            }
-        })
-    }
 })).actions((self) => ({
     addActivity: () => {
         let id = (Math.random() * 1000000).toFixed(0)
-        self.setEditKeys(id)
         self.activityList.push(
             {
                 id: id,
@@ -49,6 +33,7 @@ const activity = types.model({
                 decs: '',
                 state: '1',
                 days: 0,
+                isEdit:true
             }
         )
     },
@@ -72,7 +57,6 @@ const activity = types.model({
 }))
 
 export const activityInstance = activity.create({
-    editKeys:['1'],
     activityList:[
         {
             id: '1',
@@ -80,6 +64,7 @@ export const activityInstance = activity.create({
             decs: '',
             state: '1',
             days: 0,
+            isEdit:true
         }
     ]
 })

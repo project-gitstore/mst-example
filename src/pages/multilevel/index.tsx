@@ -130,7 +130,8 @@ const Specifications = () => {
                         <div className={style.attributeItemBox}>
                           <ProFormText allowClear={false} fieldProps = {{
                             onChange:(e) => {
-                              attributeInstance.setAttributeItem(attributeIndex, itemIndex, e.target.value)
+                              // attributeInstance.setAttributeItem([`attributes[${attributeIndex}]`, `attributeItems[${itemIndex}]`],'name', e.target.value);
+                              attributeInstance.setAttributeItem(attributeIndex, itemIndex, e.target.value);
                             }
                           }} width="xs" name={['name']} />
                           <span className={style.deleteEl}  onClick={()=>{
@@ -147,7 +148,7 @@ const Specifications = () => {
             );
           }}
         </ProFormList>
-          <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
+          <ProCard title="MST实时数据" headerBordered collapsible defaultCollapsed>
             <ProFormField
               ignoreFormItem
               fieldProps={{

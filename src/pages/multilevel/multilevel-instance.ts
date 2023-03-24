@@ -1,12 +1,14 @@
 
 import { types, cast, getSnapshot} from 'mobx-state-tree';
+import { getPathInstance } from '../../common/getPathInstance';
 
 const attributeItem = types.model({
     id:types.identifier,
     name:types.string
 }).actions((self) => ({
     setName: (value:string) => {
-        self.name = value;
+        // (self as any)[key] = value;
+        self.name = value
     }
 }))
 
@@ -60,6 +62,8 @@ const attributes = types.model({
     
 })).actions((self) => ({
     setAttributeItem: (rowIndex:number,itemIndex:number, value:string) => {
+        // const currentInstance = getPathInstance(self, pathArray);
+        // (currentInstance as any).setName(key,value);
         self?.attributes[rowIndex]?.attributeItems[itemIndex].setName(value)
     },
     addAttributeItem: (rowIndex:number) => {
@@ -73,7 +77,6 @@ const attributes = types.model({
     deleteAttributeItem:(rowIndex:number, itemIndex:number) => {
         self?.attributes[rowIndex]?.attributeItems.splice(itemIndex, 1)
     },
-    
 }))
 .actions((self) => ({
     formReload: (formRef:any) => {

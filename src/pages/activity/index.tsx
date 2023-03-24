@@ -7,7 +7,6 @@ import { getSnapshot} from 'mobx-state-tree';
 
 const Activity = () => {
   const actionRef = useRef<ActionType>();
-
   const columns = [
     {
       title: '活动名称',
@@ -40,11 +39,11 @@ const Activity = () => {
             options={[
               {
                 value: "1",
-                label: "未解决",
+                label: "未结束",
               },
               {
                 value: "2",
-                label: "已解决",
+                label: "已结束",
               },
             ]}
           />
@@ -87,9 +86,9 @@ const Activity = () => {
       render: (text:any, record:any, _:any, action:any) => [
         <span
           style = {{cursor:'pointer'}}
-          key="editable"
+          key="isEdit"
           onClick={() => {
-            activityInstance.setEditKeys(record.id)
+            activityInstance.activityItemChange(record?.id, 'isEdit', true)
           }}
         >
           编辑
@@ -137,17 +136,14 @@ const Activity = () => {
         value={getSnapshot(activityInstance).activityList}
         editable={{
           type: 'multiple',
-          editableKeys:getSnapshot(activityInstance).editKeys,
-          onSave: async (rowKey, data, row) => {
-            activityInstance.deleteEdikey(row.id)
-          },
+          editableKeys: getSnapshot(activityInstance).activityList.filter((item) => item.isEdit).map((m) => m.id),
           actionRender: (row, config, defaultDom) => {
             return [
               <span 
                 style = {{cursor:'pointer'}}
                 key = {row.id} 
                 onClick={() => {
-                    activityInstance.deleteEdikey(row.id)
+                  activityInstance.activityItemChange(row?.id, 'isEdit', false)
                 }}
               >
                 保存
@@ -156,7 +152,7 @@ const Activity = () => {
           }
         }}
       />
-      <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
+      <ProCard title="MST实时数据" headerBordered collapsible defaultCollapsed>
         <ProFormField
           ignoreFormItem
           fieldProps={{
