@@ -8,7 +8,9 @@ import Multilevel from './pages/multilevel'
 import Activity from './pages/activity'
 import PromiseExample from './pages/xstate-example/promise-example'
 import Drag from './pages/drag'
-import UploadFile from './pages/upload-file'
+import UploadFile from './pages/upload-file';
+import UseTransition from "./pages/usetransition";
+import UseDeferredValue from "./pages/usedeferredvalue";
 
 
 
@@ -23,6 +25,8 @@ const Routers = () => {
           <Route path="/xstate-example/promise-example" element = {<PromiseExample/>}></Route>
           <Route path="/drag" element = {<Drag/>}></Route>
           <Route path="/upload-file" element = {<UploadFile />}></Route>
+          <Route path="/usetransition" element = {<UseTransition />}></Route>
+          <Route path="/usedeferredvalue" element = {<UseDeferredValue />}></Route>
       </Routes>
     </div>
   )
